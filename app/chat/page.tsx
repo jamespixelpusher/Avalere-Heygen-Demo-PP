@@ -16,16 +16,16 @@ export default function ChatPage() {
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
-      <div className="absolute bottom-4 right-4 z-10">
-        <button
-          className="px-4 py-2 rounded-md bg-white text-black border border-zinc-600"
-          onClick={() => {
-            router.push("/");
-          }}
-        >
-          Close
-        </button>
-      </div>
+      <button
+        className="absolute z-10"
+        style={{ bottom: "1%", right: "1%" }}
+        onClick={() => {
+          router.push("/");
+        }}
+        aria-label="Close"
+      >
+        <img src="/close_button.png" alt="Close" style={{ transform: "scale(0.5)", transformOrigin: "center" }} />
+      </button>
       <div className="flex-1">
         <InteractiveAvatar />
       </div>
