@@ -54,16 +54,37 @@ export const useStreamingAvatarSession = () => {
   );
 
   const stop = useCallback(async () => {
-    avatarRef.current?.off(StreamingEvents.STREAM_READY, handleStream);
-    avatarRef.current?.off(StreamingEvents.STREAM_DISCONNECTED, stop);
-    clearMessages();
-    stopVoiceChat();
-    setIsListening(false);
-    setIsUserTalking(false);
-    setIsAvatarTalking(false);
-    setStream(null);
-    await avatarRef.current?.stopAvatar();
-    setSessionState(StreamingAvatarSessionState.INACTIVE);
+    try {
+      // If there's no avatar instance yet, just ensure state is reset safely
+      if (!avatarRef.current) {
+        clearMessages();
+        stopVoiceChat();
+        setIsListening(false);
+        setIsUserTalking(false);
+        setIsAvatarTalking(false);
+        setStream(null);
+        setSessionState(StreamingAvatarSessionState.INACTIVE);
+        return;
+      }
+
+      avatarRef.current.off(StreamingEvents.STREAM_READY, handleStream);
+      avatarRef.current.off(StreamingEvents.STREAM_DISCONNECTED, stop);
+      clearMessages();
+      stopVoiceChat();
+      setIsListening(false);
+      setIsUserTalking(false);
+      setIsAvatarTalking(false);
+      setStream(null);
+      try {
+        await avatarRef.current.stopAvatar();
+      } catch {
+        // Ignore stop errors (e.g., if not fully started yet)
+      }
+      setSessionState(StreamingAvatarSessionState.INACTIVE);
+    } catch {
+      // Swallow any unexpected errors to avoid crashing during navigation
+      setSessionState(StreamingAvatarSessionState.INACTIVE);
+    }
   }, [
     handleStream,
     setSessionState,
