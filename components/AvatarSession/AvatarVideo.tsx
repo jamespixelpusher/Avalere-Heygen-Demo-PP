@@ -4,8 +4,7 @@ import { ConnectionQuality } from "@heygen/streaming-avatar";
 // Connection quality overlay removed per requirement
 import { useStreamingAvatarSession } from "../logic/useStreamingAvatarSession";
 import { StreamingAvatarSessionState } from "../logic";
-import { CloseIcon } from "../Icons";
-import { Button } from "../Button";
+// Removed top-right close button per requirement
 
 type AvatarVideoProps = {
   muted?: boolean;
@@ -20,17 +19,6 @@ export const AvatarVideo = forwardRef<HTMLVideoElement, AvatarVideoProps>(({ mut
   return (
     <>
       {/* Connection Quality overlay removed */}
-      {isLoaded && (
-        <Button
-          className="absolute top-3 right-3 !p-2 bg-zinc-700 bg-opacity-50 z-10"
-          onClick={() => {
-            stopAvatar();
-            onClose?.();
-          }}
-        >
-          <CloseIcon />
-        </Button>
-      )}
       <video
         ref={ref}
         autoPlay
