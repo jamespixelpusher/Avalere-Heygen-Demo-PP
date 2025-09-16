@@ -17,7 +17,7 @@ import { StreamingAvatarProvider, StreamingAvatarSessionState } from "./logic";
 import { LoadingIcon } from "./Icons";
 
 const DEFAULT_CONFIG: StartAvatarRequest = {
-  quality: AvatarQuality.Low,
+  quality: AvatarQuality.High,
   avatarName: "Judy_Lawyer_Sitting2_public",
   knowledgeId: "bfca337642ba4468a592b3b1eda1487c",
   voice: {
@@ -122,6 +122,17 @@ function InteractiveAvatar() {
     if (stream && mediaStream.current) {
       mediaStream.current.srcObject = stream;
       mediaStream.current.onloadedmetadata = async () => {
+        // Hint the browser for sharper rendering when supported
+        try {
+          const currentStream = mediaStream.current!.srcObject as MediaStream | null;
+          const videoTrack = currentStream?.getVideoTracks?.()[0];
+          if (videoTrack && ("contentHint" in videoTrack)) {
+            // @ts-expect-error: contentHint is not in all TS DOM lib versions
+            videoTrack.contentHint = "detail";
+          }
+        } catch {
+          // no-op
+        }
         try {
           await mediaStream.current!.play();
           // If play succeeds, allow audio
